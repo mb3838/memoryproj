@@ -35,9 +35,6 @@ importlib-metadata==4.8.2
 importlib-resources==5.4.0
 itsdangerous==2.0.1
 Jinja2==3.0.3
-kivy-deps.glew==0.3.0
-kivy-deps.sdl2==0.3.1
-Kivy-Garden==0.1.4
 Mako==1.1.6
 MarkupSafe==2.0.1
 oauthlib==3.1.1
