@@ -45,7 +45,6 @@ pyasn1-modules==0.2.8
 Pygments==2.10.0
 PyJWT==2.3.0
 pyparsing==3.0.6
-pypiwin32==223
 PyQt5==5.15.6
 PyQt5-Qt5==5.15.2
 PyQt5-sip==12.9.0
