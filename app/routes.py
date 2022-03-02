@@ -289,8 +289,8 @@ except OSError as error:
     pass
 
 #Load pretrained face detection model   
-txt_path = str(pathlib.Path().absolute()) + r"\app\static\face_recognition_model\deploy.prototxt.txt" 
-model_path = str(pathlib.Path().absolute()) + r"\app\static\face_recognition_model\res10_300x300_ssd_iter_140000.caffemodel" 
+txt_path = str(pathlib.Path().absolute()) + r"/app/static/face_recognition_model/deploy.prototxt.txt" 
+model_path = str(pathlib.Path().absolute()) + r"/app/static/face_recognition_model/res10_300x300_ssd_iter_140000.caffemodel" 
 net = cv2.dnn.readNetFromCaffe(os.path.relpath(txt_path), os.path.relpath(model_path))
 
 
@@ -391,7 +391,7 @@ def tasks(event_id):
             if(rec):
                 now=time.strftime("%Y-%m-%d_%H_%M_%S")
                 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-                pth = os.path.join((str(pathlib.Path().absolute()) + r"\app\static\video"), 'vid_{}.avi'.format(now))
+                pth = os.path.join((str(pathlib.Path().absolute()) + r"/app/static/video"), 'vid_{}.avi'.format(now))
                 out = cv2.VideoWriter(pth, fourcc, 20.0, (640, 480))
                 #Start new thread for recording the video
                 thread = Thread(target = record, args=[out,])
