@@ -1,0 +1,223 @@
+#myCarousel{
+    width: 80%;
+}
+
+.weather{
+    margin-top: 4%;
+}
+
+.page{
+    margin:2%;
+}
+
+.event_prev{
+    border: 10px;
+    background-color: #e6e6e6;
+    margin: 5px;
+}
+
+.event_content {
+    margin: 10px;
+}
+
+.event_prev img {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    width: 150px;
+}
+
+.event_prev img:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+}
+
+.file-form{
+    padding-left: 20%;
+}
+
+.sidebar {
+    margin: 0;
+    padding: 0;
+    width: 170px;
+    background-color: #f1f1f1;
+    height: 80%;
+    overflow: auto;
+  }
+
+  .sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+  }
+   
+  .sidebar a.active {
+    background-color: #04AA6D;
+    color: white;
+  }
+  
+  .sidebar a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+  }
+
+.content{
+    margin-left: 200px;
+    padding: 1px 16px;
+    height: 1000px;
+}
+  
+h2 {
+    margin: 0 !important;
+}
+
+i.fa-solid{
+    font-size: 20px;
+
+}
+
+
+/* Always set the map height explicitly to define the size of the div
+* element that contains the map. */
+#map {
+height: 100%;
+}
+
+/* Optional: Makes the sample page fill the window. */
+html,
+body {
+height: 100%;
+margin: 0;
+padding: 0;
+}
+
+#description {
+font-family: Roboto;
+font-size: 15px;
+font-weight: 300;
+}
+
+#infowindow-content .title {
+font-weight: bold;
+}
+
+#infowindow-content {
+display: none;
+}
+
+#map #infowindow-content {
+display: inline;
+}
+
+.pac-card {
+background-color: #fff;
+border: 0;
+border-radius: 2px;
+box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+margin: 10px;
+padding: 0 0.5em;
+font: 400 18px Roboto, Arial, sans-serif;
+overflow: hidden;
+font-family: Roboto;
+padding: 0;
+}
+
+#pac-container {
+padding-bottom: 12px;
+margin-right: 12px;
+}
+
+.pac-controls {
+display: inline-block;
+padding: 5px 11px;
+}
+
+.pac-controls label {
+font-family: Roboto;
+font-size: 13px;
+font-weight: 300;
+}
+
+#pac-input {
+background-color: #fff;
+font-family: Roboto;
+font-size: 15px;
+font-weight: 300;
+margin-left: 12px;
+padding: 0 11px 0 13px;
+text-overflow: ellipsis;
+width: 400px;
+}
+
+#pac-input:focus {
+border-color: #4d90fe;
+}
+
+#title {
+color: #fff;
+background-color: #4d90fe;
+font-size: 25px;
+font-weight: 500;
+padding: 6px 12px;
+}
+
+#target {
+width: 345px;
+}
+
+.del {
+    margin: 20px;
+}
+
+.controls {
+    margin-top: 10px;
+    border: 1px solid transparent;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 32px;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+  
+#origin-input,
+#destination-input {
+    background-color: #fff;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 200px;
+}
+  
+#origin-input:focus,
+#destination-input:focus {
+    border-color: #4d90fe;
+}
+
+#mode-selector {
+    color: #fff;
+    background-color: #4d90fe;
+    margin-left: 12px;
+    padding: 5px 11px 0px 11px;
+}
+
+#mode-selector label {
+font-family: Roboto;
+font-size: 13px;
+font-weight: 300;
+}
+
+#btnClick {
+    margin: 5px;
+    margin-bottom: 5px;
+}
+
+.modify {
+    float: right;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

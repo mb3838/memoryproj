@@ -2,11 +2,47 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>Live Log an Event</h1>
-    <p>Press the button to log an important moment during your event.</p>
+    <!-- Load an icon library -->
+    <script src="https://kit.fontawesome.com/593da481ed.js" crossorigin="anonymous"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+
     <div class="row">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+        <div class="col-md-1">
+            {% include 'sidebar.html' %}
+        </div>
+        <div class=content>
+            <h1>{{ name }}</h1>
+            <p>Press the button to log an important moment during your event.</p>
+            
+            <div class="row">
+                <div class="col-md-8  offset-md-2">
+            
+                    <h4 class="mt-5">Live Camera Stream</h4>
+                        <form method="post" action="{{ url_for('tasks', event_id=event_id) }}">
+                        <input type="submit" value="Stop/Start" name="stop" />
+                        <input type="submit" value="Capture" name="click"/>
+                        <input type="submit" value="Face Only" name="face" />
+                        <input type="submit" value="Start/Stop Recording" name="rec" />
+                    </form>
+                    <img src="{{ url_for('video_feed', event_id=event_id) }}" height="80%">
+                    <h3 style="font-family:courier;">Instructions:</h3>
+                    <ol style="font-family:courier;">
+                        <li>Stop/Start--Toggle between stop or start live streaming</li>
+                        <li>Capture--Take still-shot and save in the 'shots' directory</li>
+                        <li>Face Only--Shows just your face if present(Toggle on/off)</li> 
+                        <li>Start/Stop Recording--Toggle between starting and stopping video recording</li>	
+                    
+                </div>
+            </div>
+
+            
+            <div class="row">
+                <div class="col-md-4">
+                    {{ wtf.quick_form(form) }}
+                </div>
+            </div>
         </div>
     </div>
+    
+    
 {% endblock %}

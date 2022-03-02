@@ -1,8 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, \
-    TextAreaField
+    TextAreaField, TimeField, SelectField
+from flask_wtf.file import FileField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
     Length
+from wtforms.fields import DateField
 from app.models import User
 
 
@@ -64,11 +66,20 @@ class EmptyForm(FlaskForm):
 
 
 class EventForm(FlaskForm):
-    name = StringField('Event Name', validators=[DataRequired()])
-    location = StringField('Event Address', validators=[DataRequired()])
+    name = StringField('Event Name', [DataRequired()])
+    location = StringField('Event Address', [DataRequired()], id='autocompleteOrigin')
+    date = DateField('Date', format='%Y-%m-%d')
+    time = TimeField('Event Start')
     live_log = SubmitField('Log Live Event')
-    plan = SubmitField('Plan Ahead')
 
 class LiveLogForm(FlaskForm):
     log = SubmitField('Log')
     generate = SubmitField('Generate Cues')
+
+class RouteForm(FlaskForm):
+    origin = StringField('Start Address', [DataRequired()], id='autocompleteOrigin')
+    destination = StringField('Event Address', [DataRequired()], id='autocompleteDestination')
+    mode_choices = [('walking', 'Walking'), ("driving", 'Driving'), ('transit', 'Transit'),
+    ('bicycling', 'Bicycling')]
+    mode = SelectField('Transport Mode', choices=mode_choices)
+    submit = SubmitField('Confirm')

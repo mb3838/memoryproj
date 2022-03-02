@@ -1,0 +1,27 @@
+<!-- Load an icon library -->
+<script src="https://kit.fontawesome.com/593da481ed.js" crossorigin="anonymous"></script>
+
+
+<aside class="col-12 col-md-2 p-0 bg-dark flex-shrink-1">
+    <nav class="navbar navbar-expand navbar-dark bg-dark flex-md-column flex-row align-items-start py-2">
+        <div class="collapse navbar-collapse ">
+            <ul class="flex-md-column flex-row navbar-nav w-100 justify-content-between">
+                <li class="nav-item">
+                    <a class="nav-link pl-0" href="{{ url_for('live_log', event_id=event_id) }}"><i class="fas fa-house-user"></i> <span class="font-weight-bold">Event Home</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link pl-0" href="{{ url_for('image_upload', event_id=event_id) }}"><i class="fas fa-camera"></i> <span class="d-none d-md-inline">Add Images</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link pl-0" href="{{ url_for('route', event_id=event_id) }}"><i class="fas fa-map"></i> <span class="d-none d-md-inline">Add Routes</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link pl-0" href="{{ url_for('image_upload', event_id=event_id) }}"><i class="fas fa-film"></i> <span class="d-none d-md-inline">Add Video</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link pl-0" href="{{ url_for('image_upload', event_id=event_id) }}"><i class="fas fa-at"></i> <span class="d-none d-md-inline">Link Email</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</aside>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <!-- Load an icon library -->
+    <script src="https://kit.fontawesome.com/593da481ed.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css" crossorigin="anonymous">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+    <script src="{{ url_for('static',filename='index.js') }}"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <div class=row>
+        <div class="col-md-2 sidebar">
+            {% include 'sidebar.html' %}
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-9 route">
+            <h3>Add Travel Route</h3>
+
+            <div class="col-md-4">
+                {{ wtf.quick_form(form) }}
+            </div>
+
+            <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+            <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwAj6vhSVeS0JpxKs610ydB3ONQtEpYPY&callback=initAutocomplete&libraries=places&v=weekly"
+            async
+            ></script> 
+
+            
+
+        </div>
+    </div>
+    
+    
+{% endblock %}

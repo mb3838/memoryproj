@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>Events</h1>
+    {% for event in events.items %}
+    <div class="col-md-3 event">
+        {% include 'event_preview.html' %}
+    </div>
+    {% endfor %}
+    <div class="col-md-4 page">
+        {% if prev_url %}
+        <a href="{{ prev_url }}">Newer events</a>
+        {% endif %}
+        {% if next_url %}
+        <a href="{{ next_url }}">Older events</a>
+        {% endif %}
+    </div>
+{% endblock %}

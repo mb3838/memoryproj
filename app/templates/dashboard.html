@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+
+<a id="edit" class="modify" href="{{ url_for('live_log', event_id=event_id) }}">Edit</a>
+<a id="delete" class="modify" href="{{ url_for('live_log', event_id=event_id) }}"> Delete</a>
+
+<div class="col-sm-7">
+    <div class="col-sm-7">
+        <div class="well">
+            <h3>Summary - {{ event_name }}</h3>
+            <p>{{ location }}</p>
+            <p>{{ date }}</p>
+            <p>{{ time }}</p>
+        </div>
+    </div> 
+    <div class="col-sm-5">
+        <div class="well">
+            <p>temperature...</p>
+            <p>ye</p>
+            <p>he</p>
+            <p>k</p>
+            <p>k</p>
+            <p>k</p>
+            <p>k</p>
+        </div>
+    </div>    
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="well">
+                {% include 'slideshow.html' %}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="well">
+                <p>Text</p> 
+                <p>Text</p> 
+                <p>Text</p> 
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="well">
+                <p>Text</p> 
+                <p>Text</p> 
+                <p>Text</p> 
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="well">
+                <p>Text</p> 
+                <p>Text</p> 
+                <p>Text</p> 
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="well">
+                <p>Text</p> 
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="well">
+                <p>Text</p> 
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-sm-5">
+    <div class="well">
+        <h4>Trip Route</h4>
+        <video width="400" controls>
+            <source src="{{url_for('static',filename='route_video/' + video_name)}}" type="video/mp4">
+        </video>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5">
+        <div class="well">
+            <h4>Users</h4>
+            <p>1 Million</p> 
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@ from hashlib import md5
 from time import time
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import relationship
 import jwt
 from app import app, db, login
 
@@ -54,6 +55,10 @@ class Event(db.Model):
     location = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date = db.Column(db.Date)
+    start = db.Column(db.Time)
+    logs = relationship("Log", cascade="all, delete", backref="parent")
+    images = relationship("Images", cascade="all, delete", backref="parent")
 
     def __repr__(self):
         return '<Event {}>'.format(self.timestamp)
@@ -65,3 +70,8 @@ class Log(db.Model):
 
     def __repr__(self):
         return '<Event log {}>'.format(self.timestamp)
+
+class Images(db.Model):
+    image_id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
+    filename = db.Column(db.String(140))

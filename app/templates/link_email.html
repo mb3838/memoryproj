@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+<title>Link Email</title>
+
+{% block app_content %}
+    <!-- Load an icon library -->
+    <script src="https://kit.fontawesome.com/593da481ed.js" crossorigin="anonymous"></script>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+
+    <div class="row">
+        <div class="col-md-1">
+            {% include 'sidebar.html' %}
+        </div>
+        <div class="row">
+            <h1>Link Your Gmail Account</h1>
+            
+        </div>
+    </div>
+    
+{% endblock %}

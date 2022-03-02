@@ -1,0 +1,19 @@
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+<script src="{{ url_for('static',filename='index.js') }}"></script>
+<script src="https://kit.fontawesome.com/593da481ed.js" crossorigin="anonymous"></script>
+
+    <div class="event_prev">
+        <div class="event_content">
+            <a href="{{ url_for('dashboard', event_id=event.id) }}">
+                <img src="{{url_for('static',filename='streetview_images/' + event.location + '.jpg')}}">
+            </a>
+            <a class="pull-right del" href="{{ url_for('delete_event', event_id=event.id) }}"
+             onclick="return confirm('Do you want to permanently delete event {{ event_title }}?');" style="margin-left: 10%;"><i class="fas fa-trash-alt" style="size: 2x"></i> </a>
+            <div class="event_info">
+                <p style="font-weight: bold;">{{ event.name }}</p>
+                Location:  {{ event.location }}
+                <br>
+                Time:  {{ event.timestamp | format_date }}
+            </div>
+        </div>
+    </div>
