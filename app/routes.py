@@ -289,7 +289,7 @@ except OSError as error:
     pass
 
 #Load pretrained face detection model   
-myLoc = r"\app\static\face_recognition_model" 
+myLoc = str(pathlib.Path().absolute()) + r"\app\static\face_recognition_model" 
 net = cv2.dnn.readNetFromCaffe(os.path.join(myLoc,'deploy.prototxt.txt'), os.path.join(myLoc,'res10_300x300_ssd_iter_140000.caffemodel'))
 
 
