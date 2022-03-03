@@ -294,7 +294,7 @@ model_path = str(pathlib.Path().absolute()) + r"/app/static/face_recognition_mod
 net = cv2.dnn.readNetFromCaffe(os.path.relpath(txt_path), os.path.relpath(model_path))
 
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(cv2.CAP_V4L2)
 
 def record(out):
     global rec_frame
@@ -383,7 +383,7 @@ def tasks(event_id):
                 cv2.destroyAllWindows()
                 
             else:
-                camera = cv2.VideoCapture(0)
+                camera = cv2.VideoCapture(cv2.CAP_V4L2)
                 switch=1
         elif  request.form.get('rec') == 'Start/Stop Recording':
             global rec, out
