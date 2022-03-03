@@ -15,5 +15,5 @@ class Config(object):
     ADMINS = ['your-email@example.com']
     MAX_CONTENT_LENGTH = 1024 * 1024
     UPLOAD_EXTENSIONS = ['.jpg', '.png', '.gif']
-    UPLOAD_PATH = str(pathlib.Path().absolute()) + r"\app\static\uploads"
+    UPLOAD_PATH = str(pathlib.Path().absolute()) + r"/app/static/uploads"
     POSTS_PER_PAGE = 12

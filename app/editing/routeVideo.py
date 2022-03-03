@@ -1,8 +1,8 @@
 import json, googlemaps, requests, pandas as pd, numpy as np, \
 	polyline, urllib, math, os, pathlib, glob, subprocess, cv2
 
-PHOTO_FOLDER = str(pathlib.Path().absolute()) + r"\app\static\route_images"
-VIDEO_FOLDER = str(pathlib.Path().absolute()) + r"\app\static\route_video"
+PHOTO_FOLDER = str(pathlib.Path().absolute()) + r"/app/static/route_images"
+VIDEO_FOLDER = str(pathlib.Path().absolute()) + r"/app/static/route_video"
 
 
 def createRouteVid(orig, dest, mode, event_id):
