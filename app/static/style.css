@@ -30,42 +30,6 @@
 .event_prev img:hover {
     box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
 }
-
-.file-form{
-    padding-left: 20%;
-}
-
-.sidebar {
-    margin: 0;
-    padding: 0;
-    width: 170px;
-    background-color: #f1f1f1;
-    height: 80%;
-    overflow: auto;
-  }
-
-  .sidebar a {
-    display: block;
-    color: black;
-    padding: 16px;
-    text-decoration: none;
-  }
-   
-  .sidebar a.active {
-    background-color: #04AA6D;
-    color: white;
-  }
-  
-  .sidebar a:hover:not(.active) {
-    background-color: #555;
-    color: white;
-  }
-
-.content{
-    margin-left: 200px;
-    padding: 1px 16px;
-    height: 1000px;
-}
   
 h2 {
     margin: 0 !important;
@@ -81,14 +45,6 @@ i.fa-solid{
 * element that contains the map. */
 #map {
 height: 100%;
-}
-
-/* Optional: Makes the sample page fill the window. */
-html,
-body {
-height: 100%;
-margin: 0;
-padding: 0;
 }
 
 #description {
@@ -220,4 +176,80 @@ font-weight: 300;
     margin-left: 10px;
     margin-right: 10px;
     margin-bottom: 10px;
+}
+
+
+/* The side navigation menu */
+.sidebar {
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+  }
+  
+  /* Sidebar links */
+  .sidebar a {
+    display: block;
+    color: black;
+    padding: 16px;
+    text-decoration: none;
+  }
+  
+  /* Active/current link */
+  .sidebar a.active {
+    background-color: #04AA6D;
+    color: white;
+  }
+  
+  /* Links on mouse-over */
+  .sidebar a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+  }
+  
+/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+div.content {
+    margin-left: 230px;
+    padding: 15px;
+    height: 100%;
+}
+  
+/* On screens that are less than 700px wide, make the sidebar into a topbar */
+@media screen and (max-width: 700px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    .sidebar a {
+        float: left;
+    }
+    div.content {
+        margin-left: 0;
+    }
+}
+  
+/* On screens that are less than 425px, display the bar vertically, instead of horizontally */
+@media screen and (max-width: 425px) {
+    .sidebar a {
+        text-align: center;
+        float: none;
+    }
+    
+}
+
+#content-block{
+    padding: 15px;
+}
+
+.center{
+    margin: auto;
+}
+
+.video-fluid{
+    display: block;
+    margin: auto;
 }

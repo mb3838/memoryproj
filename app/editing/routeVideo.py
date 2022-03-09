@@ -177,7 +177,7 @@ def create_video(event_id):
 		size = (width,height)
 		img_array.append(img)
 
-	out = cv2.VideoWriter(VIDEO_FOLDER + '/route_{0}.mp4'.format(event_id),cv2.VideoWriter_fourcc(*'AVC1'), 1, size)
+	out = cv2.VideoWriter(VIDEO_FOLDER + '/route-{0}.mp4'.format(event_id),cv2.VideoWriter_fourcc(*'AVC1'), 1, size)
 	
 	for i in range(len(img_array)):
 		out.write(img_array[i])

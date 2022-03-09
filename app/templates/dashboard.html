@@ -4,86 +4,88 @@
 {% block app_content %}
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
 
-<a id="edit" class="modify" href="{{ url_for('live_log', event_id=event_id) }}">Edit</a>
-<a id="delete" class="modify" href="{{ url_for('live_log', event_id=event_id) }}"> Delete</a>
+<div class="row">
+    <a id="edit" class="modify" href="{{ url_for('live_log', event_id=event_id) }}">Edit</a>
+    <a id="delete" class="modify" href="{{ url_for('live_log', event_id=event_id) }}"> Delete</a>
+</div>
 
-<div class="col-sm-7">
-    <div class="col-sm-7">
+<!-- Left side of page -->
+<div class="col-md-7">
+    <div class="col-md-12">
         <div class="well">
             <h3>Summary - {{ event_name }}</h3>
             <p>{{ location }}</p>
             <p>{{ date }}</p>
             <p>{{ time }}</p>
         </div>
-    </div> 
-    <div class="col-sm-5">
-        <div class="well">
-            <p>temperature...</p>
-            <p>ye</p>
-            <p>he</p>
-            <p>k</p>
-            <p>k</p>
-            <p>k</p>
-            <p>k</p>
-        </div>
     </div>    
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-md-12 center">
             <div class="well">
-                {% include 'slideshow.html' %}
+                <h3>Location</h3>
+                <img src="{{url_for('static',filename=location_image_fp)}}" alt="Event location" style="width:100%;">
+                <p style="text-align: center;">The location of the event was {{ location }}</p>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
-            <div class="well">
-                <p>Text</p> 
-                <p>Text</p> 
-                <p>Text</p> 
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="well">
-                <p>Text</p> 
-                <p>Text</p> 
-                <p>Text</p> 
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="well">
-                <p>Text</p> 
-                <p>Text</p> 
-                <p>Text</p> 
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-8">
-            <div class="well">
-                <p>Text</p> 
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="well">
-                <p>Text</p> 
-            </div>
+        <div class="col-md-12 col-xs-12">
+            {% for image_filename in uploaded_img_filenames %}
+            <div class="col-xs-4 col-md-4">
+                <div class="thumbnail">
+                    <a href="{{url_for('static',filename='uploads/' + image_filename)}}">
+                        <img src="{{url_for('static',filename='uploads/' + image_filename)}}" alt="Upload" style="width:100%">
+                    </a>
+                </div>
+              </div>
+            {% endfor %}
         </div>
     </div>
 </div>
-<div class="col-sm-5">
-    <div class="well">
-        <h4>Trip Route</h4>
-        <video width="400" controls>
-            <source src="{{url_for('static',filename='route_video/' + video_name)}}" type="video/mp4">
-        </video>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-5">
+<!-- Left side of page -->
+
+<!-- Right side of page -->
+<div class="col-md-5">
+    <!-- Weather info -->
+    <div class="col-md-10">
         <div class="well">
-            <h4>Users</h4>
-            <p>1 Million</p> 
+            <div id="openweathermap-widget-15"></div>
+            <script>
+                window.myWidgetParam ? window.myWidgetParam : window.myWidgetParam = [];  
+                window.myWidgetParam.push({id: 15,cityid: '2644972',appid: '0fda3beb7131e56f9a92e555917cdd76',
+                units: 'metric',containerid: 'openweathermap-widget-15',  });  
+                (function() {var script = document.createElement('script');
+                script.async = true;
+                script.charset = "utf-8";
+                script.src = "//openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js";
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(script, s);  })();
+            </script>
         </div>
     </div>
+    <!-- Weather info -->
+    <!-- Route video -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+                <h4>Trip Route</h4>
+                <video width="100%" controls>
+                    <source src="{{url_for('static',filename='route_video/' + route_vid_name)}}" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </div>
+    <!-- Route video -->
+    <!-- Captured videos -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+                <h4>Captured Videos</h4>
+                {% include 'video_carousel.html' %}
+            </div>
+        </div>
+    </div>
+    <!-- Captured videos -->
+    <!-- Right side of page -->
 </div>
 {% endblock %}

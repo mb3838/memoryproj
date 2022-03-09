@@ -9,28 +9,23 @@
     <script src="{{ url_for('static',filename='index.js') }}"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
-    <div class=row>
-        <div class="col-md-2 sidebar">
-            {% include 'sidebar.html' %}
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-9 route">
-            <h3>Add Travel Route</h3>
-
-            <div class="col-md-4">
+    <div class="wrapper">
+        {% include 'sidebar.html' %}
+        <div class=content>
+            <div class="col-md-9 route">
+                <h3>Add Travel Route</h3>
+    
                 {{ wtf.quick_form(form) }}
+                
+    
+                <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+                <script
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwAj6vhSVeS0JpxKs610ydB3ONQtEpYPY&callback=initAutocomplete&libraries=places&v=weekly"
+                async
+                ></script>
+    
             </div>
-
-            <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-            <script
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwAj6vhSVeS0JpxKs610ydB3ONQtEpYPY&callback=initAutocomplete&libraries=places&v=weekly"
-            async
-            ></script> 
-
-            
-
         </div>
     </div>
-    
     
 {% endblock %}

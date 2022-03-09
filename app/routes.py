@@ -7,18 +7,63 @@ from werkzeug.utils import secure_filename
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, \
     EmptyForm, ResetPasswordRequestForm, ResetPasswordForm, EventForm,\
-    LiveLogForm, RouteForm
+    RouteForm
 from app.editing import streetview, routeVideo
 from app.output import slides
-from app.models import User, Event, Log, Images
+from app.models import User, Event, Log
 from app.email import send_password_reset_email
 import requests, os, imghdr, time, pathlib
 #from camera import VideoCamera
 from threading import Thread
-import cv2
+import boto3, botocore
+from botocore.client import Config
 import numpy as np
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpegs', 'gif'])
+
+s3 = boto3.client(
+   "s3",
+   region_name='eu-west-2',
+   aws_access_key_id=app.config['S3_KEY'],
+   aws_secret_access_key=app.config['S3_SECRET']
+)
+
+def upload_file_to_s3(file, bucket_name, acl="public-read"):
+    try:
+        s3.upload_fileobj(
+            file,
+            bucket_name,
+            file.filename,
+            ExtraArgs={
+                "ACL": acl,
+                "ContentType": file.content_type
+            }
+        )
+    except Exception as e:
+        print("Something Happened: ", e)
+        return e
+    return "{}{}".format('http://{}.s3.amazonaws.com/'.format(bucket_name), file.filename)
+
+def get_bucket_keys(bucket):
+    keys = []
+    resp = s3.list_objects_v2(Bucket=bucket)
+    for obj in resp['Contents']:
+        keys.append(obj['Key'])
+    return keys
+
+def find_event_files(bucket, event_id):
+    keys = get_bucket_keys(bucket)
+    event_keys = []
+    for key in keys:
+        dash = key.rfind('-')
+        dot = key.rfind('.')
+        if key[dash+1:dot] == str(event_id):
+            event_keys.append(key) 
+    return event_keys
+
+def download_file(bucket, key, save_location):
+    print('trying to find: ', key, ' in bucket: ', bucket)
+    s3.download_file(bucket, key, save_location)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
@@ -152,6 +197,10 @@ def create_event():
         db.session.refresh(event)
         streetview.SaveViews(event.id)
 
+        #send to s3
+        filepath = 'app/static/streetview_images/' + form.location.data + '.jpg'
+        s3.upload_file(filepath,'event-location-images-typ',form.location.data + '.jpg')
+
         if 'live_log' in request.form:
             return redirect(url_for('live_log', event_id=event.id))
         elif 'plan' in request.form:
@@ -161,27 +210,79 @@ def create_event():
 @app.route('/live_log/<event_id>', methods=['GET', 'POST'])
 def live_log(event_id):
     current_event = Event.query.filter_by(id=event_id).first()
-    form = LiveLogForm()
-    if form.validate_on_submit():
+    if request.method == "POST":
         if 'log' in request.form:
             log = Log(event_id=event_id)
             db.session.add(log)
             db.session.commit()
             flash('Logged')
-        elif 'generate' in request.form:
+        elif 'save' in request.form:
             return redirect(url_for('dashboard', event_id=event_id))
-    return render_template('live_log.html', title='Live Log', form=form, event_id=event_id, name=current_event.name)
+    return render_template('live_log.html', title='Live Log', event_id=event_id, name=current_event.name)
 
-@app.route('/plan')
-def plan():
-    
-    return render_template('create_event.html', title='Register')
+@app.route('/live_log/<event_id>/requests',methods=['POST'])
+def sendVideo(event_id):
+    if 'video-blob' not in request.files:
+        resp = jsonify({'message' : 'No video in the request'})
+        resp.status_code = 400
+        return resp
+    vid = request.files['video-blob']
+    print("vid response = ", vid)
+    print("vid name = ", vid.filename)
+    vid.filename = secure_filename(vid.filename)
+    output = upload_file_to_s3(vid, app.config["S3_BUCKET"])
+    print("response from sending to s3 = ", output)
+    return redirect(url_for('live_log', event_id=event_id))
 
 @app.route('/dashboard/<event_id>', methods=['GET'])
 def dashboard(event_id):
     current_event = Event.query.filter_by(id=event_id).first()
-
     address = current_event.location
+
+    #create dictionaries of all the event media files needed for this event
+    imgs = {
+        'bucket': 'uploaded-images-typ',
+        'filepath': 'app/static/uploads/',
+        'keys': find_event_files('uploaded-images-typ', event_id)
+    }
+    captured_vids = {
+        'bucket': 'captured-videos-typ',
+        'filepath': 'app/static/captured-video/',
+        'keys': find_event_files('captured-videos-typ', event_id)
+    }
+    route_vid = {
+        'bucket': 'route-videos-typ',
+        'filepath': 'app/static/route_video/',
+        'keys': find_event_files('route-videos-typ', event_id)
+    }
+    location_img = {
+        'bucket': 'event-location-images-typ',
+        'filepath': 'app/static/streetview_images/',
+        'keys': [address + '.jpg']
+    }
+
+    required_media = {
+        'imgs': imgs,
+        'route': route_vid,
+        'captured-vids': captured_vids,
+        'location-img': location_img
+    }
+
+    # for each required file - if it cant be found on device - download from s3
+    for key in required_media:
+        for file in required_media[key]['keys']:
+            if os.path.isfile(required_media[key]['filepath'] + file) == False:
+                print('file not found: ', file)
+                download_file(required_media[key]['bucket'], file, required_media[key]['filepath'] + file)
+
+    loc_img_filepath = 'streetview_images/' + current_event.location + '.jpg'
+    route_vid_name = "route-" + str(current_event.id) + ".mp4"
+    uploaded_img_filenames = imgs['keys']
+    start_vid = captured_vids['keys'][0]
+    captured_vid_filenames = captured_vids['keys']
+    captured_vid_len = len(captured_vid_filenames)
+    print('uploaded imgs = ', uploaded_img_filenames)
+    
     geo = address.rfind(",", 0, address.rfind(","))
     geo = address[geo + 2:].replace(" ","")
     
@@ -196,14 +297,10 @@ def dashboard(event_id):
         city_id = 2172797
         print("No JSON returned")
 
-    filepath = 'streetview_images/' + current_event.location + '.jpg'
-    video_name = "route_" + str(current_event.id) + ".mp4"
-    #query images table for matching event_id's
-    filelist = Images.query.filter_by(event_id=event_id).all()
     #return list of filenames
-    return render_template('dashboard.html', title='Dashboard', location=current_event.location, 
-    filepath=filepath, city_id=city_id, filenames=filelist, event_id=event_id, event_name=current_event.name,
-    time=str(current_event.start)[:-3], date=current_event.date, video_name = video_name)
+    return render_template('dashboard.html', title='Dashboard', location=current_event.location, city_id=city_id, event_id=event_id, event_name=current_event.name,
+    time=str(current_event.start)[:-3], date=current_event.date, route_vid_name=route_vid_name, location_image_fp=loc_img_filepath, uploaded_img_filenames=uploaded_img_filenames, 
+    captured_vid_filenames=captured_vid_filenames, captured_vid_len=captured_vid_len)
 
 @app.route('/image_upload/<event_id>', methods=['GET', 'POST'])
 def image_upload(event_id):
@@ -211,13 +308,14 @@ def image_upload(event_id):
     if request.method == 'POST':
         uploaded_file = request.files.get('file', None)
         splitName = os.path.splitext(uploaded_file.filename)
-        filename = secure_filename(splitName[0] + "_" + event_id + splitName[1])
-        if filename != '':
-            file_ext = os.path.splitext(filename)[1]
+        uploaded_file.filename = secure_filename(splitName[0] + "-" + event_id + splitName[1])
+        if uploaded_file.filename != '':
+            file_ext = os.path.splitext(uploaded_file.filename)[1]
             if file_ext not in app.config['UPLOAD_EXTENSIONS']or \
                     file_ext != validate_image(uploaded_file.stream):
                 return "Invalid image", 400
-            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+            output = upload_file_to_s3(uploaded_file, "uploaded-images-typ")
+            print("response from sending to s3 = ", output)
     return render_template('image_upload.html', title='Upload image', files=files, event_id=event_id)
 
 
@@ -267,152 +365,15 @@ def route(event_id):
         print('destination = ', destination, "\n")
         print('mode = ', mode, "\n")
         routeVideo.createRouteVid(origin, destination, mode, event_id)
+        #send to s3
+        filename = 'route-' + str(event_id) + '.mp4'
+        filepath = 'app/static/route_video/' + filename
+        try:
+            s3.upload_file(filepath,'route-videos-typ',filename)
+        except FileNotFoundError:
+            print("File ", filename, " not found")
         flash('Route uploaded!')
 
-    return render_template('route.html', title='Event Route', form=form,#
+    return render_template('route.html', title='Event Route', form=form,
     event_id = event_id)
 
-
-###################################VIDEO
-
-global capture,rec_frame, switch, face, rec, out 
-capture=0
-face=0
-switch=1
-rec=0
-rec_frame=None
-
-#make shots directory to save pics
-try:
-    os.mkdir('./shots')
-except OSError as error:
-    pass
-
-#Load pretrained face detection model   
-txt_path = str(pathlib.Path().absolute()) + r"/app/static/face_recognition_model/deploy.prototxt.txt" 
-model_path = str(pathlib.Path().absolute()) + r"/app/static/face_recognition_model/res10_300x300_ssd_iter_140000.caffemodel" 
-net = cv2.dnn.readNetFromCaffe(os.path.relpath(txt_path), os.path.relpath(model_path))
-
-
-camera = cv2.VideoCapture(0)
-
-def record(out):
-    global rec_frame
-    while(rec):
-        time.sleep(0.05)
-        out.write(rec_frame)
-
-
-def detect_face(frame):
-    global net
-    (h, w) = frame.shape[:2]
-    blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0,
-        (300, 300), (104.0, 177.0, 123.0))   
-    net.setInput(blob)
-    detections = net.forward()
-    confidence = detections[0, 0, 0, 2]
-
-    if confidence < 0.5:            
-            return frame           
-
-    box = detections[0, 0, 0, 3:7] * np.array([w, h, w, h])
-    (startX, startY, endX, endY) = box.astype("int")
-    try:
-        frame=frame[startY:endY, startX:endX]
-        (h, w) = frame.shape[:2]
-        r = 480 / float(h)
-        dim = ( int(w * r), 480)
-        frame=cv2.resize(frame,dim)
-    except Exception as e:
-        pass
-    return frame
- 
-
-def gen_frames():  # generate frame by frame from camera
-    global out, capture,rec_frame
-    while True:
-        success, frame = camera.read() 
-        if success:
-            if(face):                
-                frame= detect_face(frame)    
-            if(capture):
-                capture=0
-                now = datetime.datetime.now()
-                p = os.path.sep.join(['shots', "shot_{}.png".format(str(now).replace(":",''))])
-                cv2.imwrite(p, frame)
-            
-            if(rec):
-                rec_frame=frame
-                frame= cv2.putText(cv2.flip(frame,1),"Recording...", (0,25), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255),4)
-                frame=cv2.flip(frame,1)
-            
-                
-            try:
-                ret, buffer = cv2.imencode('.jpg', cv2.flip(frame,1))
-                frame = buffer.tobytes()
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            except Exception as e:
-                pass
-                
-        else:
-            pass
-    
-    
-@app.route('/live_log/<event_id>/video_feed')
-def video_feed(event_id):
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/live_log/<event_id>/requests',methods=['POST','GET'])
-def tasks(event_id):
-    global switch,camera
-    if request.method == 'POST':
-        if request.form.get('click') == 'Capture':
-            global capture
-            capture=1
-        elif  request.form.get('face') == 'Face Only':
-            global face
-            face=not face 
-            if(face):
-                time.sleep(4)   
-        elif  request.form.get('stop') == 'Stop/Start':
-            
-            if(switch==1):
-                switch=0
-                camera.release()
-                cv2.destroyAllWindows()
-                
-            else:
-                camera = cv2.VideoCapture(0)
-                switch=1
-        elif  request.form.get('rec') == 'Start/Stop Recording':
-            global rec, out
-            rec= not rec
-            if(rec):
-                now=time.strftime("%Y-%m-%d_%H_%M_%S")
-                fourcc = cv2.VideoWriter_fourcc(*'XVID')
-                pth = os.path.join((str(pathlib.Path().absolute()) + r"/app/static/video"), 'vid_{}.avi'.format(now))
-                out = cv2.VideoWriter(pth, fourcc, 20.0, (640, 480))
-                #Start new thread for recording the video
-                thread = Thread(target = record, args=[out,])
-                thread.start()
-            elif(rec==False):
-                out.release()
-                          
-                 
-    elif request.method=='GET':
-        return redirect(url_for('live_log', event_id=event_id))
-    return redirect(url_for('live_log', event_id=event_id))
-
-
-if __name__ == '__main__':
-    app.run()
-    
-camera.release()
-cv2.destroyAllWindows() 
-
-
-
-
-
-###net = cv2.dnn.readNetFromCaffe(url_for('static',filename='face_recognition_model/deploy.prototxt.txt'), url_for('static',filename='face_recognition_model/res10_300x300_ssd_iter_140000.caffemodel'))

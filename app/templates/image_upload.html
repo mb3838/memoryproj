@@ -8,18 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css" crossorigin="anonymous">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
 
-    <div class="container-fluid overflow-hidden">
-        <div class="row vh-100 overflow-auto">
-            <div class="col-md-1">
-                {% include 'sidebar.html' %}
-            </div>
+    <div class="wrapper">
+        {% include 'sidebar.html' %}
+        <div class=content>
             <div class="row">
-                <div class="file-form">
-                    <h1>File Upload</h1>
-                    <form action="{{ url_for('image_upload', event_id=event_id) }}" class="dropzone">
-                    </form>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js" crossorigin="anonymous"></script>
-                </div>
+                
+                <h1>File Upload</h1>
+                <form action="{{ url_for('image_upload', event_id=event_id) }}" class="dropzone">
+                </form>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js" crossorigin="anonymous"></script>
+                
             </div>
         </div>
     </div>

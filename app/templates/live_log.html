@@ -5,44 +5,40 @@
     <!-- Load an icon library -->
     <script src="https://kit.fontawesome.com/593da481ed.js" crossorigin="anonymous"></script>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+    <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+    <script src="https://www.webrtc-experiment.com/common.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-    <div class="container-fluid overflow-hidden">
-        <div class="row vh-100 overflow-auto">
-            {% include 'sidebar.html' %}
-            <div class=content>
-                <h1>{{ name }}</h1>
-                <p>Press the button to log an important moment during your event.</p>
-                
-                <div class="row">
-                    <div class="col-md-8  offset-md-2">
-                
-                        <h4 class="mt-5">Live Camera Stream</h4>
-                            <form method="post" action="{{ url_for('tasks', event_id=event_id) }}">
-                            <input type="submit" value="Stop/Start" name="stop" />
-                            <input type="submit" value="Capture" name="click"/>
-                            <input type="submit" value="Face Only" name="face" />
-                            <input type="submit" value="Start/Stop Recording" name="rec" />
-                        </form>
-                        <img src="{{ url_for('video_feed', event_id=event_id) }}" height="80%">
-                        <h3 style="font-family:courier;">Instructions:</h3>
-                        <ol style="font-family:courier;">
-                            <li>Stop/Start--Toggle between stop or start live streaming</li>
-                            <li>Capture--Take still-shot and save in the 'shots' directory</li>
-                            <li>Face Only--Shows just your face if present(Toggle on/off)</li> 
-                            <li>Start/Stop Recording--Toggle between starting and stopping video recording</li>	
-                        
-                    </div>
+    <div class="wrapper">
+        {% include 'sidebar.html' %}
+        <div class=content>
+            <div class="row">
+                <div class="col-md-6" id="content-block">
+                    <h1>{{ name }}</h1>
+                    <p>Press the button to log an important moment during your event.</p>  
                 </div>
-
-                
-                <div class="row">
-                    <div class="col-md-4">
-                        {{ wtf.quick_form(form) }}
-                    </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-4" id="content-block">
+                    <h4>Live Camera Stream</h4>
+                    <p>Your connected camera will be displayed here when you first log your event</p>
+                    <video id="live" autoplay playsinline></video>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <form action="/live_log/{{ event_id }}" method="POST">
+                        <button type="submit" class="btn btn-info" name="log">Log</button>
+                        <button type="submit" class="btn btn-secondary" name="save">Save Event</button>    
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-        
+
+    <script type="text/javascript">
+        var event_id = {{ event_id|tojson }}
+    </script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="{{ url_for('static',filename='recorder.js') }}"></script>
     
 {% endblock %}

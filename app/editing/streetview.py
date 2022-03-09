@@ -12,6 +12,7 @@ def GetStreet(address,SaveLoc):
     base = "https://maps.googleapis.com/maps/api/streetview?size=600x400&location="
     MyUrl = base + urllib.parse.quote_plus(address) + "&fov=180&heading=120&key=AIzaSyAwAj6vhSVeS0JpxKs610ydB3ONQtEpYPY"
     fileName = address + ".jpg"
+    
     urllib.request.urlretrieve(MyUrl, os.path.join(SaveLoc,fileName))
 
 

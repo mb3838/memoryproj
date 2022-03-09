@@ -72,10 +72,6 @@ class EventForm(FlaskForm):
     time = TimeField('Event Start')
     live_log = SubmitField('Log Live Event')
 
-class LiveLogForm(FlaskForm):
-    log = SubmitField('Log')
-    generate = SubmitField('Generate Cues')
-
 class RouteForm(FlaskForm):
     origin = StringField('Start Address', [DataRequired()], id='autocompleteOrigin')
     destination = StringField('Event Address', [DataRequired()], id='autocompleteDestination')

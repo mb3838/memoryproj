@@ -17,3 +17,7 @@ class Config(object):
     UPLOAD_EXTENSIONS = ['.jpg', '.png', '.gif']
     UPLOAD_PATH = str(pathlib.Path().absolute()) + r"/app/static/uploads"
     POSTS_PER_PAGE = 12
+    S3_BUCKET = "captured-videos-typ"
+    S3_KEY = "AKIAXVGGIKKLMCGB42TE"
+    S3_SECRET = "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"
+    S3_LOCATION = 'http://{}.s3.amazonaws.com/'.format(S3_BUCKET)

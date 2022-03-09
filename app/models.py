@@ -58,7 +58,6 @@ class Event(db.Model):
     date = db.Column(db.Date)
     start = db.Column(db.Time)
     logs = relationship("Log", cascade="all, delete", backref="parent")
-    images = relationship("Images", cascade="all, delete", backref="parent")
 
     def __repr__(self):
         return '<Event {}>'.format(self.timestamp)
@@ -70,8 +69,3 @@ class Log(db.Model):
 
     def __repr__(self):
         return '<Event log {}>'.format(self.timestamp)
-
-class Images(db.Model):
-    image_id = db.Column(db.Integer, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
-    filename = db.Column(db.String(140))

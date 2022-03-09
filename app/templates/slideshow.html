@@ -12,19 +12,18 @@
 
             <div class="item active">
                 {{current_user.us}}
-                <img src="{{url_for('static',filename=filepath)}}" alt="Event location" style="width:100%;">
+                <img src="{{url_for('static',filename=location_image_fp)}}" alt="Event location" style="width:100%;">
                 <div class="carousel-caption">
                     <h3>Location</h3>
                     <p>The location of the event was {{ location }}</p>
                 </div>
             </div>
 
-            {% for image in filenames %}
+            {% for image_filename in uploaded_img_filenames %}
             <div class="item">
-                <img src="{{url_for('static',filename='uploads/' + image.filename)}}" alt="upload" style="width:100%;">
+                <img src="{{url_for('static',filename='uploads/' + image_filename)}}" alt="upload" style="width:100%;">
                 <div class="carousel-caption">
-                    <h3>Temperature</h3>
-                    <p>The local temperature at the time was ...</p>
+            
                 </div>
             </div>
             {% endfor %}
