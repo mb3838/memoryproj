@@ -278,10 +278,8 @@ def dashboard(event_id):
     loc_img_filepath = 'streetview_images/' + current_event.location + '.jpg'
     route_vid_name = "route-" + str(current_event.id) + ".mp4"
     uploaded_img_filenames = imgs['keys']
-    start_vid = captured_vids['keys'][0]
     captured_vid_filenames = captured_vids['keys']
     captured_vid_len = len(captured_vid_filenames)
-    print('uploaded imgs = ', uploaded_img_filenames)
     
     geo = address.rfind(",", 0, address.rfind(","))
     geo = address[geo + 2:].replace(" ","")
