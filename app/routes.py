@@ -19,7 +19,7 @@ import boto3, botocore
 from botocore.client import Config
 import numpy as np
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpegs', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpegs', 'gif', 'jpeg'])
 
 s3 = boto3.client(
    "s3",
