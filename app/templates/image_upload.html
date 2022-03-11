@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
-<title>File Upload</title>
+<title>Image Upload</title>
 
 {% block app_content %}
     <!-- Load an icon library -->
@@ -13,7 +13,7 @@
         <div class=content>
             <div class="row">
                 
-                <h1>File Upload</h1>
+                <h1>Image Upload</h1>
                 <form action="{{ url_for('image_upload', event_id=event_id) }}" class="dropzone">
                 </form>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js" crossorigin="anonymous"></script>

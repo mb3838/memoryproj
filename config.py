@@ -13,9 +13,11 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['your-email@example.com']
-    MAX_CONTENT_LENGTH = 1024 * 1024
-    UPLOAD_EXTENSIONS = ['.jpg', '.png', '.gif']
+    MAX_CONTENT_LENGTH = 10240 * 10240
+    UPLOAD_EXTENSIONS = ['.jpg', '.png', '.gif', '.jpeg']
+    VID_UPLOAD_EXTENSIONS = ['.mp4', '.avi', '.mov', '.wvi']
     UPLOAD_PATH = str(pathlib.Path().absolute()) + r"/app/static/uploads"
+    VID_UPLOAD_PATH = str(pathlib.Path().absolute()) + r"/app/static/vid_uploads"
     POSTS_PER_PAGE = 12
     S3_BUCKET = "captured-videos-typ"
     S3_KEY = "AKIAXVGGIKKLMCGB42TE"

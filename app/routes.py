@@ -47,10 +47,13 @@ def upload_file_to_s3(file, bucket_name, acl="public-read"):
 def get_bucket_keys(bucket):
     keys = []
     resp = s3.list_objects_v2(Bucket=bucket)
-    for obj in resp['Contents']:
-        keys.append(obj['Key'])
-    return keys
-
+    try:
+        for obj in resp['Contents']:
+            keys.append(obj['Key'])
+        return keys
+    except:
+        return []
+    
 def find_event_files(bucket, event_id):
     keys = get_bucket_keys(bucket)
     event_keys = []
@@ -245,6 +248,11 @@ def dashboard(event_id):
         'filepath': 'app/static/uploads/',
         'keys': find_event_files('uploaded-images-typ', event_id)
     }
+    uploaded_vids = {
+        'bucket': 'uploaded-videos-typ',
+        'filepath': 'app/static/vid_uploads/',
+        'keys': find_event_files('uploaded-videos-typ', event_id)
+    }
     captured_vids = {
         'bucket': 'captured-videos-typ',
         'filepath': 'app/static/captured-video/',
@@ -263,6 +271,7 @@ def dashboard(event_id):
 
     required_media = {
         'imgs': imgs,
+        'uploaded-vids': uploaded_vids,
         'route': route_vid,
         'captured-vids': captured_vids,
         'location-img': location_img
@@ -278,6 +287,7 @@ def dashboard(event_id):
     loc_img_filepath = 'streetview_images/' + current_event.location + '.jpg'
     route_vid_name = "route-" + str(current_event.id) + ".mp4"
     uploaded_img_filenames = imgs['keys']
+    uploaded_vid_filenames = uploaded_vids['keys']
     captured_vid_filenames = captured_vids['keys']
     captured_vid_len = len(captured_vid_filenames)
     
@@ -298,7 +308,7 @@ def dashboard(event_id):
     #return list of filenames
     return render_template('dashboard.html', title='Dashboard', location=current_event.location, city_id=city_id, event_id=event_id, event_name=current_event.name,
     time=str(current_event.start)[:-3], date=current_event.date, route_vid_name=route_vid_name, location_image_fp=loc_img_filepath, uploaded_img_filenames=uploaded_img_filenames, 
-    captured_vid_filenames=captured_vid_filenames, captured_vid_len=captured_vid_len)
+    captured_vid_filenames=captured_vid_filenames, captured_vid_len=captured_vid_len, uploaded_vid_filenames = uploaded_vid_filenames)
 
 @app.route('/image_upload/<event_id>', methods=['GET', 'POST'])
 def image_upload(event_id):
@@ -322,6 +332,30 @@ def image_upload(event_id):
 def upload(filename):
     
     return send_from_directory(os.path.join(app.config['UPLOAD_PATH'],
+    current_user.get_id()), filename)
+
+
+@app.route('/video_upload/<event_id>', methods=['GET', 'POST'])
+def video_upload(event_id):
+    files = os.listdir(app.config['VID_UPLOAD_PATH'])
+    if request.method == 'POST':
+        uploaded_file = request.files.get('file', None)
+        splitName = os.path.splitext(uploaded_file.filename)
+        uploaded_file.filename = secure_filename(splitName[0] + "-" + event_id + splitName[1])
+        if uploaded_file.filename != '':
+            file_ext = os.path.splitext(uploaded_file.filename)[1]
+            if file_ext not in app.config['VID_UPLOAD_EXTENSIONS']:
+                return "Invalid video", 400
+            output = upload_file_to_s3(uploaded_file, "uploaded-videos-typ")
+            print("response from sending to s3 = ", output)
+    return render_template('video_upload.html', title='Upload Video', files=files, event_id=event_id)
+
+
+@app.route('/video_upload/<filename>')
+@login_required
+def vid_upload(filename):
+    
+    return send_from_directory(os.path.join(app.config['VID_UPLOAD_PATH'],
     current_user.get_id()), filename)
 
 
