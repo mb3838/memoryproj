@@ -377,7 +377,6 @@ def past_events():
 def delete_event(event_id):
     event = Event.query.filter_by(id=event_id).first()
     logs = Log.query.filter_by(event_id=event_id).all()
-    images = Images.query.filter_by(event_id=event_id).all()
     if event:
         msg_text = 'Event %s successfully removed' % str(event.name)
         db.session.delete(event)
