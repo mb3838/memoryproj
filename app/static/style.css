@@ -253,3 +253,7 @@ div.content {
     display: block;
     margin: auto;
 }
+
+.video-well{
+    margin-bottom: 35%;
+}
